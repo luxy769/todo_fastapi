@@ -1,0 +1,33 @@
+services:
+  backend:
+    build: backend/.
+    image: todo_fastapi:latest
+    env_file: backend/.env
+    restart: always
+    network:
+      - todoapp
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/api/healthcheck"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 3s
+
+db:
+  image: postgres:16-alpine
+  env_file: .env
+  restart: always
+  volumes:
+    - postgres_data:/var/lib/postgresql/data
+  networks:
+    - etoapp
+  healthcheck:
+    test: "pg_isready --username=${POSTGRES_USER} && psql --username=${POSTGRES_USER} --list"
+    interval: 5s
+    timeout: 10s
+    retries: 10
