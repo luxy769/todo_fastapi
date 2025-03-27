@@ -13,7 +13,7 @@ RUN pip install --user --no-cache-dir -r requirements.txt
 
 ENV PATH="/home/worker/.local/bin:${PATH}"
 
-COPY --chown=worker:worker app/ app/
+COPY --chown=worker:worker . .
 
 EXPOSE 8000
-ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--proxy-headers"]
+ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]

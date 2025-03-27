@@ -14,3 +14,7 @@ app.include_router(tasks.router)
 @app.get("/")
 def root():
     return {"message": "Welcome to the ToDo API"}
+
+@app.get("/api/healthcheck")
+def healthcheck():
+    return {"status": "ok"}

@@ -4,11 +4,11 @@ services:
     image: todo_fastapi:latest
     env_file: backend/.env
     restart: always
-    network:
+    networks:
       - todoapp
     depends_on:
       db:
-        condition: service_healthy
+         condition: service_healthy
     ports:
       - "8000:8000"
     healthcheck:
@@ -18,16 +18,23 @@ services:
       retries: 3
       start_period: 3s
 
-db:
-  image: postgres:16-alpine
-  env_file: .env
-  restart: always
-  volumes:
-    - postgres_data:/var/lib/postgresql/data
-  networks:
-    - etoapp
-  healthcheck:
-    test: "pg_isready --username=${POSTGRES_USER} && psql --username=${POSTGRES_USER} --list"
-    interval: 5s
-    timeout: 10s
-    retries: 10
+
+  db:
+    image: postgres:16-alpine
+    env_file: .env
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - todoapp
+    healthcheck:
+      test: "pg_isready --username=${POSTGRES_USER} && psql --username=${POSTGRES_USER} --list"
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  postgres_data:
+
+networks:
+  todoapp:
